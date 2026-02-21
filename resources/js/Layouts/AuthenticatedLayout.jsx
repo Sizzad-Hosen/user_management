@@ -5,7 +5,7 @@ export default function AuthenticatedLayout({ children }) {
         <div className="flex min-h-screen bg-gray-100">
 
             {/* Sidebar 20% */}
-            <aside className="w-1/5 bg-slate-900 text-slate-200 hidden md:flex flex-col">
+            <aside className="w-1/6 bg-slate-900 text-slate-200 hidden md:flex flex-col">
 
                 <div className="px-6 py-5 text-xl font-bold border-b border-slate-700">
                     User<span className="text-indigo-500">Manager</span>
