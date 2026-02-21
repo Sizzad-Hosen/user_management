@@ -4,62 +4,79 @@ namespace App\Http\Controllers;
 
 use App\Models\MessUser;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MessUserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = MessUser::query();
+
+        if ($request->search) {
+            $query->where('name', 'LIKE', "%{$request->search}%")
+                  ->orWhere('phone_number', 'LIKE', "%{$request->search}%")
+                  ->orWhere('address', 'LIKE', "%{$request->search}%");
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        return Inertia::render('MessUsers/Index', [
+            'messUsers' => $query->latest()->get(),
+            'filters' => $request->only('search', 'status')
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return Inertia::render('MessUsers/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+   $request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'nullable|email|max:255',
+
+    'phone_number' => 'required|string|max:20',
+    'guardian_number' => 'nullable|string|max:20',
+
+    'jamanot_vara_deposit' => 'nullable|numeric|min:0',
+
+    'complain' => 'nullable|string',
+
+    'status' => 'required|in:active,left',
+
+    'address' => 'nullable|string',
+
+    'join_date' => 'nullable|date',
+    'leave_date' => 'nullable|date|after_or_equal:join_date',
+]);
+
+        MessUser::create($request->all());
+
+        return redirect()->route('messUsers.index')->with('success', 'MessUser created');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MessUser $messUser)
+    public function edit(MessUser $user)
     {
-        //
+        return Inertia::render('MessUsers/Edit', [
+            'user' => $user
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MessUser $messUser)
+    public function update(Request $request, MessUser $user)
     {
-        //
+        $user->update($request->all());
+
+        return redirect()->route('messUsers.index')->with('success', 'MessUser updated');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MessUser $messUser)
+    public function destroy(MessUser $user)
     {
-        //
-    }
+        $user->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(MessUser $messUser)
-    {
-        //
+        return redirect()->route('messUsers.index')->with('success', 'MessUser deleted');
     }
 }

@@ -27,12 +27,12 @@ export default function AuthenticatedLayout({ children }) {
                         Create Room
                     </Link>
 
-                    <Link href="/users" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Show Users
+                    <Link href="/messUsers" className="block px-3 py-2 rounded hover:bg-slate-800">
+                        Show MessUsers
                     </Link>
 
-                    <Link href="/users/create" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Add User
+                    <Link href="/messUsers/create" className="block px-3 py-2 rounded hover:bg-slate-800">
+                        Create MessUser
                     </Link>
 
                 </nav>

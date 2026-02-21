@@ -53,7 +53,7 @@ export const EditModel = ({ form, setForm, closeModal, handleUpdate }) => {
             placeholder="Floor"
           />
 </div>
-      <div className="space-y-1">
+      <div className="space-y-1"></div>
    <label className="text-sm font-medium text-gray-700">
                 Status
               </label>
@@ -68,7 +68,7 @@ export const EditModel = ({ form, setForm, closeModal, handleUpdate }) => {
             <option value="full">Full</option>
             <option value="maintenance">Maintenance</option>
           </select>
-</div>
+
         </div>
 
         {/* Actions */}

@@ -2,15 +2,20 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\MessUserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Room route
+
 Route::middleware(['auth'])->group(function () {
     Route::resource('rooms', RoomController::class);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('messUsers', MessUserController::class);
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
