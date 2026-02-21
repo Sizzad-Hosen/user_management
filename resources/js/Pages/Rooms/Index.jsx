@@ -3,7 +3,7 @@ import { usePage, router } from "@inertiajs/react";
 import { useState } from "react";
 // import { EditModel } from "./Edit";
 import Swal from "sweetalert2";
-import { EditModel, EditModelMessUser } from "./Edit";
+import { EditModel } from "./Edit";
 export default function Index() {
   const { rooms } = usePage().props;
 

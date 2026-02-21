@@ -64,19 +64,29 @@ class MessUserController extends Controller
         return Inertia::render('MessUsers/Edit', [
             'user' => $user
         ]);
-    }
+    }// MessUserController.php
 
-    public function update(Request $request, MessUser $user)
-    {
-        $user->update($request->all());
 
-        return redirect()->route('messUsers.index')->with('success', 'MessUser updated');
-    }
 
-    public function destroy(MessUser $user)
-    {
-        $user->delete();
+public function update(Request $request, MessUser $user)
+{
+    $user->update($request->all());
 
-        return redirect()->route('messUsers.index')->with('success', 'MessUser deleted');
-    }
+    // Return JSON for Inertia SPA
+    return response()->json([
+        'success' => true,
+        'user' => $user,
+        'message' => 'MessUser updated successfully'
+    ]);
+}
+
+public function destroy(MessUser $user)
+{
+    $user->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'MessUser deleted successfully'
+    ]);
+}
 }
