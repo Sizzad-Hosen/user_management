@@ -12,7 +12,6 @@ use Inertia\Inertia;
 Route::middleware(['auth'])->group(function () {
     Route::resource('rooms', RoomController::class);
 });
-
 Route::middleware(['auth'])->group(function () {
     Route::resource('messUsers', MessUserController::class);
 });

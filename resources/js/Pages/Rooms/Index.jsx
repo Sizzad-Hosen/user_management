@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage, router } from "@inertiajs/react";
 import { useState } from "react";
 // import { EditModel } from "./Edit";
+
 import Swal from "sweetalert2";
 import { EditModel } from "./Edit";
 export default function Index() {
@@ -29,6 +30,7 @@ export default function Index() {
       onSuccess: () => setEditingRoom(null),
     });
   };
+
 const deleteRoom = (id) => {
   Swal.fire({
     title: "Are you sure?",

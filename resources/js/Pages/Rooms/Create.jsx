@@ -2,6 +2,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useForm, Head } from "@inertiajs/react";
 
 export default function Create() {
+
+
   const { data, setData, post, processing } = useForm({
     room_number: "",
     capacity: "",
@@ -9,6 +11,7 @@ export default function Create() {
     status: "available",
   });
 
+  
   const submit = (e) => {
     e.preventDefault();
     post("/rooms");
