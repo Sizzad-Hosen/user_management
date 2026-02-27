@@ -109,7 +109,10 @@ export default function Show() {
             </thead>
 
             <tbody>
-           
+           {
+
+             roomDetails ? (
+                
                   <tr key={roomDetails?.id} className="border-t">
                     <td className="p-3">
                       {roomDetails?.room_number}
@@ -133,12 +136,16 @@ export default function Show() {
                       </span>
                     </td>
                   </tr>
-            
+             )
+             :
                 <tr>
                   <td colSpan="5" className="p-4 text-center text-gray-400">
                     No room history found.
                   </td>
                 </tr>
+           }  
+            
+             
           
             </tbody>
           </table>
