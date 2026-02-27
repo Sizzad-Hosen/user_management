@@ -1,12 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import EditRoomAllocationModal from "./Edit";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 export default function Index() {
   const { allocations, users, rooms, flash } = usePage().props;
-
+console.log(allocations)
   const [editingRoom, setEditingRoom] = useState(null);
   const [form, setForm] = useState({
     user_id: "",
@@ -24,6 +25,21 @@ export default function Index() {
   const closeModal = () => {
     setEditingRoom(null);
   };
+
+const [search, setSearch] = useState("");
+const [statusFilter, setStatusFilter] = useState("");
+
+const handleSearch = () => {
+  router.get(
+    route("roomAllocations.index"),
+    {
+      search: search,
+      status: statusFilter,
+    },
+    { preserveState: true, replace: true }
+  );
+};
+
 
   const handleUpdate = (updatedData) => {
     // PUT request to Room Allocation endpoint
@@ -91,6 +107,37 @@ export default function Index() {
           </div>
         )}
 
+        {/* Search & Filter */}
+<div className="flex gap-3 mb-6">
+
+  <input
+    type="text"
+    placeholder="Search by room number or user name..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="border rounded-lg p-2 w-64"
+  />
+
+  <select
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+    className="border rounded-lg p-2"
+  >
+    <option value="">All Status</option>
+    <option value="active">Active</option>
+    <option value="end">Left</option>
+  </select>
+
+  <button
+    onClick={handleSearch}
+    className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+  >
+    Search
+  </button>
+
+
+</div>
+
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
@@ -108,16 +155,21 @@ export default function Index() {
 
             <tbody className="text-gray-700 text-sm">
               {allocations.length > 0 ? (
-                allocations.map((allocation, index) => (
+                allocations?.map((allocation, index) => (
                   <tr
                     key={allocation.id}
                     className="border-t hover:bg-gray-50 transition"
                   >
                     <td className="p-3">{index + 1}</td>
-                    <td className="p-3 font-medium">
-                      {allocation.mess_user?.name}
+                <td className="p-3 font-medium">
+                    <Link
+                        href={route("roomAllocations.show", allocation?.id)}
+                        className="text-blue-600 hover:underline"
+                    >
+                        {allocation.mess_user?.name}
+                    </Link>
                     </td>
-                    <td className="p-3">
+                                        <td className="p-3">
                       Room {allocation.room?.room_number}
                     </td>
                     <td className="p-3">{allocation.start_date}</td>

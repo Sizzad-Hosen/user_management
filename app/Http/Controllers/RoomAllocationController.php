@@ -14,17 +14,34 @@ class RoomAllocationController extends Controller
     /**
      * Display a listing of room allocations.
      */
-    public function index()
-    {
-        $allocations = RoomAllocation::with(['messUser', 'room'])
-            ->latest()
-            ->get();
+public function index(Request $request)
+{
+    $query = RoomAllocation::with(['messUser', 'room']);
 
-        return Inertia::render('RoomAllocations/Index', [
-            'allocations' => $allocations,
-        ]);
+    // 🔍 Search by room number or user name
+    if ($request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->whereHas('room', function ($room) use ($request) {
+                $room->where('room_number', 'like', '%' . $request->search . '%');
+            })
+            ->orWhereHas('messUser', function ($user) use ($request) {
+                $user->where('name', 'like', '%' . $request->search . '%');
+            });
+        });
     }
 
+    // 🎯 Filter by status
+    if ($request->status) {
+        $query->where('status', $request->status);
+    }
+
+    $allocations = $query->latest()->get();
+
+    return Inertia::render('RoomAllocations/Index', [
+        'allocations' => $allocations,
+        'filters' => $request->only('search', 'status'),
+    ]);
+}
     /**
      * Show form for creating new allocation.
      */
@@ -68,10 +85,10 @@ class RoomAllocationController extends Controller
      */
     public function show(RoomAllocation $roomAllocation)
     {
-        $roomAllocation->load(['user', 'room']);
+        $roomAllocation->load(['messUser', 'room']);
 
         return Inertia::render('RoomAllocations/Show', [
-            'allocation' => $roomAllocation,
+            'messUserDetails' => $roomAllocation,
         ]);
     }
 
