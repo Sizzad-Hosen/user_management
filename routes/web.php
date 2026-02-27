@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\MessUserController;
+use App\Http\Controllers\RoomAllocationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,6 +15,9 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::middleware(['auth'])->group(function () {
     Route::resource('messUsers', MessUserController::class);
+});
+Route::middleware(['auth'])->group(function () {
+    Route::resource('roomAllocations', RoomAllocationController::class);
 });
 
 Route::get('/', function () {
