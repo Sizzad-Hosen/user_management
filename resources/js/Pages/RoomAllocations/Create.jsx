@@ -3,7 +3,7 @@ import { useForm, usePage } from "@inertiajs/react";
 
 export default function Create() {
   const { rooms, users } = usePage().props;
-
+ console.log("Rooms in Create Modal:", users, rooms)
   const { data, setData, post, processing, errors } = useForm({
     room_id: "",
     user_id: "",
@@ -37,7 +37,7 @@ export default function Create() {
               className="w-full border rounded-lg p-2"
             >
               <option value="">-- Select User --</option>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name} ({user.phone_number})
                 </option>
@@ -61,7 +61,7 @@ export default function Create() {
               className="w-full border rounded-lg p-2"
             >
               <option value="">-- Select Room --</option>
-              {rooms.map((room) => (
+              {rooms?.map((room) => (
                 <option key={room.id} value={room.id}>
                   Room {room.room_number} (Capacity: {room.capacity})
                 </option>

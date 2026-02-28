@@ -4,11 +4,17 @@ import Swal from "sweetalert2";
 import EditRoomAllocationModal from "./Edit";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import CreateRoomAllocationModal from "./Modal/CreateRoomAllocationModal";
 
-export default function Index() {
+
+  export default function Index() {
   const { allocations, users, rooms, flash } = usePage().props;
-console.log(allocations)
+
+
   const [editingRoom, setEditingRoom] = useState(null);
+ 
+  const [showModal, setShowModal] = useState(false);
+
   const [form, setForm] = useState({
     user_id: "",
     room_id: "",
@@ -21,6 +27,10 @@ console.log(allocations)
     setEditingRoom(allocation.id);
     setForm(allocation);
   };
+
+  const openModal = ()=>{
+    setCreateRoom(true);
+  }
 
   const closeModal = () => {
     setEditingRoom(null);
@@ -93,50 +103,50 @@ const handleSearch = () => {
             Room Allocations
           </h1>
           <button
-            onClick={() => router.visit(route("roomAllocations.create"))}
+            onClick={() => setShowModal(true)}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             + Allocate Room
           </button>
         </div>
 
-        {/* Flash */}
-        {flash?.success && (
-          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-            {flash.success}
-          </div>
-        )}
 
-        {/* Search & Filter */}
-<div className="flex gap-3 mb-6">
+                {flash?.success && (
+                <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                    {flash.success}
+                </div>
+                )}
 
-  <input
-    type="text"
-    placeholder="Search by room number or user name..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="border rounded-lg p-2 w-64"
-  />
+                {/* Search & Filter */}
+        <div className="flex gap-3 mb-6">
 
-  <select
-    value={statusFilter}
-    onChange={(e) => setStatusFilter(e.target.value)}
-    className="border rounded-lg p-2"
-  >
-    <option value="">All Status</option>
-    <option value="active">Active</option>
-    <option value="end">Left</option>
-  </select>
+        <input
+            type="text"
+            placeholder="Search by room number or user name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded-lg p-2 w-64"
+        />
 
-  <button
-    onClick={handleSearch}
-    className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-  >
-    Search
-  </button>
+        <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border rounded-lg p-2"
+        >
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="end">Left</option>
+        </select>
+
+        <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+            Search
+        </button>
 
 
-</div>
+        </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
@@ -215,6 +225,12 @@ const handleSearch = () => {
           handleUpdate={handleUpdate}
           users={users}
           rooms={rooms}
+        />
+      )}
+    {/* CREATE MODAL */}
+      {showModal && (
+        <CreateRoomAllocationModal
+          closeModal={() => setShowModal(false)}
         />
       )}
     </AuthenticatedLayout>

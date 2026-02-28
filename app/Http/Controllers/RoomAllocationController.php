@@ -40,6 +40,8 @@ public function index(Request $request)
     return Inertia::render('RoomAllocations/Index', [
         'allocations' => $allocations,
         'filters' => $request->only('search', 'status'),
+            'rooms' => Room::where('status', 'available')->get(),
+            'users' => MessUser::where('status', 'active')->get(),
     ]);
 }
     /**
@@ -99,8 +101,8 @@ public function index(Request $request)
     {
         return Inertia::render('RoomAllocations/Edit', [
             'allocation' => $roomAllocation->load(['user', 'room']),
-            'rooms'      => Room::all(),
-            'users'      => MessUser::all(),
+            'rooms' => Room::where('status', 'available')->get(),
+            'users' => MessUser::where('status', 'active')->get(),
         ]);
     }
 

@@ -1,21 +1,24 @@
 import { useForm, usePage } from "@inertiajs/react";
 
-export default function EditRoomAllocationModal({ closeModal , form, setform,handleUpdate , users, rooms}) {
-
-  
+export default function CreateRoomAllocationModal({ closeModal }) {
+  const { rooms, users } = usePage().props;
+ console.log("Rooms in Create Modal:", users, rooms)
   const { data, setData, post, processing, errors } = useForm({
-    room_id: form.room_id || "",
-    user_id: form.user_id || "",
-    start_date: form.start_date || "",
-    end_date: form.end_date || "",
-    status: form.status || "",
+    room_id: "",
+    user_id: "",
+    start_date: "",
+    end_date: "",
+    status: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handleUpdate(data);
-    closeModal();
+    post(route("roomAllocations.store"), {
+      onSuccess: () => {
+        closeModal();
+      },
+    });
   };
 
   return (
@@ -23,7 +26,7 @@ export default function EditRoomAllocationModal({ closeModal , form, setform,han
       <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-lg">
 
         <h2 className="text-xl font-semibold mb-6">
-          Edit Room Allocation
+          Create Room Allocation
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -129,11 +132,10 @@ export default function EditRoomAllocationModal({ closeModal , form, setform,han
 
             <button
               type="submit"
-              onClick={handleUpdate}
               disabled={processing}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg"
             >
-              {processing ? "Saving..." : "Update"}
+              {processing ? "Saving..." : "Allocate"}
             </button>
           </div>
 
