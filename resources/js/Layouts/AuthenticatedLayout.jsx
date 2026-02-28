@@ -22,16 +22,11 @@ export default function AuthenticatedLayout({ children }) {
                     <Link href="/roomAllocations" className="block px-3 py-2 rounded hover:bg-slate-800">
                         Show All RoomAllocations
                     </Link>
-                    <Link href="/roomAllocations/create" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Create RoomAllocation
-                    </Link>
+                  
                     <Link href="/rooms" className="block px-3 py-2 rounded hover:bg-slate-800">
                         Show All Rooms
                     </Link>
-                    <Link href="/rooms/create" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Create Room
-                    </Link>
-
+        
 
                     <Link href="/messUsers" className="block px-3 py-2 rounded hover:bg-slate-800">
                         Show MessUsers

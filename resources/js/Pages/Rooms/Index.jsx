@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import Swal from "sweetalert2";
 import { EditModel } from "./Edit";
+import CreateRoomModal from "./Modal/CreateRoomModal";
 export default function Index() {
   const { rooms } = usePage().props;
 
@@ -58,13 +59,24 @@ const deleteRoom = (id) => {
   });
 };
 
+
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <AuthenticatedLayout>
       <div className="bg-white shadow-sm rounded-xl p-6">
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-5">
-          <h1 className="text-xl font-semibold text-gray-800">Rooms List</h1>
+     {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-xl font-semibold text-gray-800">
+            Room List
+          </h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            + Create Room
+          </button>
         </div>
 
         {/* Table */}
@@ -129,6 +141,13 @@ const deleteRoom = (id) => {
       {editingRoom && (
        <EditModel form={form} setForm={setForm} closeModal={closeModal} handleUpdate={handleUpdate}></EditModel>
       )}
+
+          {/* CREATE MODAL */}
+            {showModal && (
+              <CreateRoomModal
+                closeModal={() => setShowModal(false)}
+              />
+            )}
     </AuthenticatedLayout>
   );
 }

@@ -28,10 +28,6 @@ import CreateRoomAllocationModal from "./Modal/CreateRoomAllocationModal";
     setForm(allocation);
   };
 
-  const openModal = ()=>{
-    setCreateRoom(true);
-  }
-
   const closeModal = () => {
     setEditingRoom(null);
   };
