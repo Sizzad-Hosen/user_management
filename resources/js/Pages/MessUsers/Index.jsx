@@ -1,72 +1,52 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage, router } from "@inertiajs/react";
 import { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import CreateMessUserModal from "./Modal/CreateMessUserModal";
 import { EditModelMessUser } from "./Edit";
 import Swal from "sweetalert2";
 
 export default function Index() {
-  const { messUsers: initialUsers } = usePage().props;
+  const { messUsers: initialUsers, flash } = usePage().props;
 
-  // Local state for users
   const [messUsers, setMessUsers] = useState(initialUsers);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone_number: "",
-    guardian_number: "",
-    complain: "",
-    jamanot_vara_deposit: "",
-    address: "",
-    status: "",
-    join_date: "",
-    leave_date: "",
-  });
+  const [form, setForm] = useState({});
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
-  // Sync props if updated
-  useEffect(() => {
-    setMessUsers(initialUsers);
-  }, [initialUsers]);
+  useEffect(() => setMessUsers(initialUsers), [initialUsers]);
 
-  // Open modal
   const openEdit = (user) => {
     setEditingUser(user.id);
     setForm(user);
   };
+  const closeEditModal = () => setEditingUser(null);
 
-  const closeModal = () => {
-    setEditingUser(null);
+  const handleSearch = () => {
+    router.get(
+      route("messUsers.index"),
+      { search, status: statusFilter },
+      { preserveState: true, replace: true }
+    );
   };
 
-  // Update user
+  // Update
   const handleUpdate = () => {
     router.put(`/messUsers/${editingUser}`, form, {
-      onSuccess: (page) => {
-        // Update local state for UI
-        setMessUsers((prev) =>
-          prev.map((u) => (u.id === editingUser ? { ...u, ...form } : u))
-        );
-        setEditingUser(null);
-
-        Swal.fire({
-          title: "Updated!",
-          text: "User updated successfully.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+      onSuccess: () => {
+        closeEditModal();
+        toast.success("User updated successfully!");
       },
-      onError: (errors) => {
-        console.log(errors);
-      },
+      onError: () => toast.error("Failed to update user"),
     });
   };
 
-  // Delete user
-  const deleteMessUser = (id) => {
+  const deleteUser = (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This allocation will be removed.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#2563eb",
@@ -74,14 +54,12 @@ export default function Index() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        router.delete(`/messUsers/${id}`, {
+        router.delete(route("roomAllocations.destroy", id), {
+          preserveScroll: true,
           onSuccess: () => {
-            // Remove from UI
-            setMessUsers((prev) => prev.filter((u) => u.id !== id));
-
             Swal.fire({
               title: "Deleted!",
-              text: "User deleted successfully.",
+              text: "Room allocation deleted successfully.",
               icon: "success",
               timer: 1500,
               showConfirmButton: false,
@@ -94,45 +72,94 @@ export default function Index() {
 
   return (
     <AuthenticatedLayout>
-      <div className="bg-white shadow-sm rounded-xl p-6">
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <div className="bg-white shadow-md rounded-2xl p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-5">
-          <h1 className="text-xl font-semibold text-gray-800">Mess Users List</h1>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-800">Mess Users</h1>
+            <p className="text-sm text-gray-500">Manage boarders and their info</p>
+          </div>
+
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition shadow-sm"
+          >
+            + Add New User
+          </button>
+        </div>
+
+        {/* Search & Filter */}
+        <div className="flex flex-wrap gap-3 mb-6">
+          <input
+            type="text"
+            placeholder="Search by name, phone or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded-xl px-4 py-2 w-64 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="left">Left</option>
+          </select>
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition"
+          >
+            Search
+          </button>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
-            <thead className="bg-gray-50 text-gray-600 text-sm">
+        <div className="overflow-x-auto rounded-xl border border-gray-200">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-600">
               <tr>
-                <th className="p-3 text-left">#</th>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Phone</th>
-                <th className="p-3 text-left">Deposit</th>
-                <th className="p-3 text-left">Address</th>
-                <th className="p-3 text-center">Actions</th>
+                <th className="p-4 text-left">#</th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Email</th>
+                <th className="p-4 text-left">Phone</th>
+                <th className="p-4 text-left">Deposit</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-center">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="text-gray-700 text-sm">
+            <tbody>
               {messUsers.length > 0 ? (
-                messUsers.map((user, index) => (
+                messUsers.map((user, idx) => (
                   <tr key={user.id} className="border-t hover:bg-gray-50 transition">
-                    <td className="p-3">{index + 1}</td>
-                    <td className="p-3 font-medium">{user.name}</td>
-                    <td className="p-3">{user.phone_number}</td>
-                    <td className="p-3">{user.jamanot_vara_deposit}</td>
-                    <td className="p-3">{user.address}</td>
-                    <td className="p-3 text-center space-x-2">
+                    <td className="p-4">{idx + 1}</td>
+                    <td className="p-4 font-medium">{user.name}</td>
+                    <td className="p-4">{user.email || "—"}</td>
+                    <td className="p-4">{user.phone_number || "—"}</td>
+                    <td className="p-4">{user.jamanot_vara_deposit || "—"}</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full font-medium ${
+                          user.status === "active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-200 text-gray-600"
+                        }`}
+                      >
+                        {user.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center space-x-3">
                       <button
                         onClick={() => openEdit(user)}
                         className="text-blue-600 hover:text-blue-800"
                       >
                         ✏️
                       </button>
-
                       <button
-                        onClick={() => deleteMessUser(user.id)}
+                        onClick={() => deleteUser(user.id)}
                         className="text-red-600 hover:text-red-800"
                       >
                         🗑️
@@ -142,7 +169,7 @@ export default function Index() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="p-6 text-center text-gray-400">
+                  <td colSpan="7" className="p-8 text-center text-gray-400">
                     No users found
                   </td>
                 </tr>
@@ -150,17 +177,24 @@ export default function Index() {
             </tbody>
           </table>
         </div>
-
-        {/* Edit Modal */}
-        {editingUser && (
-          <EditModelMessUser
-            form={form}
-            setForm={setForm}
-            closeModal={closeModal}
-            handleUpdate={handleUpdate}
-          />
-        )}
       </div>
+
+      {/* Edit Modal */}
+      {editingUser && (
+        <EditModelMessUser
+          form={form}
+          setForm={setForm}
+          closeModal={closeEditModal}
+          handleUpdate={handleUpdate}
+        />
+      )}
+
+      {/* Create Modal */}
+      {showCreateModal && (
+        <CreateMessUserModal
+          closeModal={() => setShowCreateModal(false)}
+        />
+      )}
     </AuthenticatedLayout>
   );
 }

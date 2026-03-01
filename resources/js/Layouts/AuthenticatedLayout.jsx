@@ -20,20 +20,16 @@ export default function AuthenticatedLayout({ children }) {
                     <p className="text-xs uppercase text-slate-400 mt-4 mb-2">Mess Management</p>
 
                     <Link href="/roomAllocations" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Show All RoomAllocations
+                       RoomAllocations
                     </Link>
                   
                     <Link href="/rooms" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Show All Rooms
+                        All Rooms
                     </Link>
         
 
                     <Link href="/messUsers" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Show MessUsers
-                    </Link>
-
-                    <Link href="/messUsers/create" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        Create MessUser
+                         MessUsers
                     </Link>
 
                 </nav>
