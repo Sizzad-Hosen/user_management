@@ -4,12 +4,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\MessUserController;
 use App\Http\Controllers\RoomAllocationController;
+use App\Http\Controllers\PaymentsRentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Room route
-
+// route
 Route::middleware(['auth'])->group(function () {
     Route::resource('rooms', RoomController::class);
 });
@@ -18,6 +18,10 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::middleware(['auth'])->group(function () {
     Route::resource('roomAllocations', RoomAllocationController::class);
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('payments', PaymentsRentController::class);
 });
 
 Route::get('/', function () {

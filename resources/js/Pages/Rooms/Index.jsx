@@ -58,7 +58,19 @@ const deleteRoom = (id) => {
     }
   });
 };
+const [search, setSearch] = useState("");
+const [statusFilter, setStatusFilter] = useState("");
 
+const handleSearch = () => {
+  router.get(
+    route("rooms.index"),
+    {
+      search: search,
+      status: statusFilter,
+    },
+    { preserveState: true, replace: true }
+  );
+};
 
   const [showModal, setShowModal] = useState(false);
 
@@ -77,6 +89,38 @@ const deleteRoom = (id) => {
           >
             + Create Room
           </button>
+        </div>
+
+                {/* Search & Filter */}
+        <div className="flex gap-3 mb-6">
+
+        <input
+            type="text"
+            placeholder="Search by room number ."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded-lg p-2 w-64"
+        />
+
+        <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border rounded-lg p-2"
+        >
+            <option value="">All Status</option>
+            <option value="active">Available</option>
+            <option value="end">Full</option>
+            <option value="maintenance">Maintenance</option>
+        </select>
+
+        <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+            Search
+        </button>
+
+
         </div>
 
         {/* Table */}

@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\MessUser;
+
 
 class PaymentsRent extends Model
 {
     use HasFactory;
+
+    protected $table = 'payments_rent'; // table name
 
     protected $fillable = [
         'user_id',
@@ -17,12 +19,12 @@ class PaymentsRent extends Model
         'amount_paid',
         'amount_due',
         'status',
-        'payment_date'
+        'payment_date',
     ];
 
-    // Payment belongs to a user
+    // Relation to MessUser
     public function messUser()
     {
-        return $this->belongsTo(MessUser::class, 'user_id');
+        return $this->belongsTo(MessUser::class, 'user_id', 'id');
     }
 }

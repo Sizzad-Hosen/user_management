@@ -24,12 +24,18 @@ export default function AuthenticatedLayout({ children }) {
                     </Link>
                   
                     <Link href="/rooms" className="block px-3 py-2 rounded hover:bg-slate-800">
-                        All Rooms
+                        Rooms
                     </Link>
         
 
                     <Link href="/messUsers" className="block px-3 py-2 rounded hover:bg-slate-800">
                          MessUsers
+                    </Link>
+                    <Link href="/payments" className="block px-3 py-2 rounded hover:bg-slate-800">
+                         Payments
+                    </Link>
+                    <Link href="/payments/create" className="block px-3 py-2 rounded hover:bg-slate-800">
+                        Create Payments
                     </Link>
 
                 </nav>

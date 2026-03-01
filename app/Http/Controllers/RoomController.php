@@ -8,13 +8,26 @@ use Inertia\Inertia;
 
 class RoomController extends Controller
 {
-    // Show all rooms
-    public function index()
-    {
-        return Inertia::render('Rooms/Index', [
-            'rooms' => Room::latest()->get()
-        ]);
+ public function index(Request $request)
+{
+    $query = Room::query();
+
+    if ($request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('room_number', 'LIKE', "%{$request->search}%")
+              ->orWhere('floor', 'LIKE', "%{$request->search}%");
+        });
     }
+
+    if ($request->status) {
+        $query->where('status', $request->status);
+    }
+
+    return Inertia::render('Rooms/Index', [
+        'rooms' => $query->latest()->get(),
+        'filters' => $request->only('search', 'status')
+    ]);
+}
 
     // Show create form
     public function create()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RoomAllocation;
+
 use App\Models\Room;
 use App\Models\MessUser;
 use Illuminate\Http\Request;
@@ -87,7 +88,7 @@ public function index(Request $request)
      */
     public function show(RoomAllocation $roomAllocation)
     {
-        $roomAllocation->load(['messUser', 'room']);
+        $roomAllocation->load(['messUser', 'room' , 'paymentsRent']);
 
         return Inertia::render('RoomAllocations/Show', [
             'messUserDetails' => $roomAllocation,
